@@ -1,8 +1,8 @@
 module.exports =
   configDefaults:
-    useEditorGrammarAsCtagsLanguage: true
     autoBuildTagsWhenActive: false
     buildTimeout: 5000
+    cmd:""
     cmdArgs: ""
     extraTagFiles: ""
 

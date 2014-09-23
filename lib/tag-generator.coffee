@@ -103,18 +103,15 @@ class TagGenerator
   generate: ->
     deferred = Q.defer()
     tags = []
-    command = path.resolve(__dirname, '..', 'vendor', "ctags-#{process.platform}")
+    command = atom.config.get("atom-ctags.cmd").trim()
+    if command == ""
+        command = path.resolve(__dirname, '..', 'vendor', "ctags-#{process.platform}")
     defaultCtagsFile = require.resolve('./.ctags')
 
     args = []
     args.push @cmdArgs... if @cmdArgs
 
     args.push("--options=#{defaultCtagsFile}", '--fields=+KSn')
-
-    if atom.config.get('atom-ctags.useEditorGrammarAsCtagsLanguage')
-      if language = @getLanguage()
-        args.push("--language-force=#{language}")
-
     args.push('-R', '-f', '-', @path)
 
     stdout = (lines) =>
