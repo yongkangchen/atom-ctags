@@ -21,8 +21,7 @@ and fork from [symbols-view](https://github.com/atom/symbols-view)
 
 #Install
 **You can install atom-ctags using the Preferences pane.**
-
-autocomplete with ctags dependent on [autocomplete-plus](https://github.com/saschagehlich/autocomplete-plus) already installed.
+And please Make sure that [autocomplete-plus](https://github.com/saschagehlich/autocomplete-plus) already installed.
 
 
 #TODO
