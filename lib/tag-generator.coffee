@@ -111,7 +111,7 @@ class TagGenerator
     args = []
     args.push @cmdArgs... if @cmdArgs
 
-    args.push("--options=#{defaultCtagsFile}", '--fields=+KSn')
+    args.push("--options=#{defaultCtagsFile}", '--fields=+KSn', '--excmd=p')
     args.push('-R', '-f', '-', @path)
 
     stdout = (lines) =>
