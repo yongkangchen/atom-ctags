@@ -2,8 +2,6 @@
 Q = require 'q'
 path = require 'path'
 
-TAG_LINE = "line:"
-TAG_LINE_LENGTH = TAG_LINE.length
 fs = null
 
 module.exports =
@@ -11,38 +9,28 @@ class TagGenerator
   constructor: (@path, @scopeName, @cmdArgs) ->
 
   parseTagLine: (line) ->
-    sections = line.split(/\t+/)
-    if sections.length > 3
-      tag = {
-        name: sections.shift()
-        file: sections.shift()
-      }
+    pattern = line.match(/\/\^(.*)\$\/;"/)?[1]
+    if not pattern
+      pattern = line.match(/\/\^(.*)\/;"/)?[1]
+    return unless pattern
 
-      i = sections.length - 1
+    idx = line.indexOf(pattern)
 
-      while i >= 0
-        row = sections[i]
-        if row.indexOf(TAG_LINE) == 0
-          row = row.substr(TAG_LINE_LENGTH) - 1
-          break
-        else
-          row = -1
-        --i
+    start = line.substr(0, idx)
+    end = line.substr(idx + pattern.length)
 
-      pattern = sections.join("\t")
+    row = 0
+    row = end.match(/line:(\d+)/)?[1]
+    --row
 
-      #match /^ and trailing $/;
-      tag.pattern = pattern.match(/^\/\^(.*)(\$\/;")/)?[1]
-      if not tag.pattern
-        tag.pattern = pattern.match(/^\/\^(.*)(\/;")/)?[1]
+    sections = start.split(/\t+/)
+    name = sections[sections.length-3]
 
-      if tag.pattern
-        tag.position = new Point(row, tag.pattern.indexOf(tag.name))
-      else
-        return null
-      return tag
-    else
-      return null
+    file: sections[sections.length-2]
+    position: new Point(row, pattern.indexOf(name))
+    pattern: pattern
+    name: name
+
 
   getLanguage: ->
     return 'Cson' if path.extname(@path) in ['.cson', '.gyp']
