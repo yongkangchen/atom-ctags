@@ -25,6 +25,7 @@ class TagGenerator
 
     sections = start.split(/\t+/)
     name = sections[sections.length-3]
+    return unless name
 
     file: sections[sections.length-2]
     position: new Point(row, pattern.indexOf(name))
