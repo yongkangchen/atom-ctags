@@ -117,9 +117,11 @@ class TagGenerator
         if tag
           tags.push(tag)
         else
+          line = JSON.stringify(line)
           err.push "failed to parseTagLine: @#{line}@"
       error "please create a new issue:<br> command: @#{command} #{args.join(' ')}@" + err.join("<br>") if err.length > 0
     stderr = (lines) ->
+      lines = JSON.stringify(lines)
       console.warn  """command: @#{command} #{args.join(' ')}@
       err: @#{lines}@"""
 
