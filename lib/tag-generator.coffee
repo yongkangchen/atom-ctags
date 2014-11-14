@@ -9,15 +9,18 @@ class TagGenerator
   constructor: (@path, @scopeName, @cmdArgs) ->
 
   parseTagLine: (line) ->
-    pattern = line.match(/\/\^(.*)\$\/;"/)?[1]
-    if not pattern
-      pattern = line.match(/\/\^(.*)\/;"/)?[1]
-    return unless pattern
+    matches = line.match(/\/\^(.*)\$\/;"/)
+    if not matches
+      matches = line.match(/\/\^(.*)\/;"/)
+    return unless matches
 
-    idx = line.indexOf(pattern)
+    pattern = matches[1]
+    patternStr = matches[0]
+
+    idx = line.indexOf(patternStr)
 
     start = line.substr(0, idx)
-    end = line.substr(idx + pattern.length)
+    end = line.substr(idx + patternStr.length)
 
     row = 0
     row = end.match(/line:(\d+)/)?[1]
