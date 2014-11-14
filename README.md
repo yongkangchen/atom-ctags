@@ -25,6 +25,7 @@ And please Make sure that [autocomplete-plus](https://github.com/saschagehlich/a
 
 
 #TODO
+* Merge [symbols-tree-view](https://atom.io/packages/symbols-tree-view)
 * ~~Submit to atom package center~~
 * ~~Modify package name~~
 * Performance optimization
