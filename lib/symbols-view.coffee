@@ -55,6 +55,7 @@ class SymbolsView extends SelectListView
       editor.setCursorBufferPosition(position)
 
   attach: ->
+    return if this.parent().length > 0
     @storeFocusedElement()
     atom.workspaceView.appendToTop(this)
     @focusFilterEditor()
