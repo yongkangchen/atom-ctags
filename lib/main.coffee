@@ -41,6 +41,11 @@ module.exports =
     atom.workspaceView.command 'atom-ctags:return-from-declaration', =>
       @createGoBackView().toggle()
 
+    atom.workspaceView.eachEditorView (editorView)->
+      editorView.on 'mousedown', (event) ->
+        return unless event.altKey and event.which is 1
+        atom.workspaceView.trigger 'atom-ctags:go-to-declaration'
+
     if not atom.packages.isPackageDisabled("symbols-view")
       atom.packages.disablePackage("symbols-view")
       alert "Warning from atom-ctags:
