@@ -35,9 +35,19 @@ class FileView extends SymbolsView
   toggle: ->
     if @hasParent()
       @cancel()
-    else if filePath = @getPath()
+    else
+      editor = atom.workspace.getActiveEditor()
+      return unless editor
+      filePath = editor.getPath()
+      return unless filePath
+      @cancelPosition = editor.getCursorBufferPosition()
       @populate(filePath)
       @attach()
+
+  cancel: ->
+    super
+    @scrollToPosition(@cancelPosition, false) if @cancelPosition
+    @cancelPosition = null
 
   toggleAll: ->
     if @hasParent()
@@ -86,8 +96,6 @@ class FileView extends SymbolsView
       @setItems(tags)
       @attach()
 
-  getPath: -> atom.workspace.getActiveEditor()?.getPath()
-
   populate: (filePath) ->
     @list.empty()
     @setLoading('Generating symbols\u2026')
@@ -95,3 +103,18 @@ class FileView extends SymbolsView
     @ctagsCache.getOrCreateTags filePath, (tags) =>
       @maxItem = Infinity
       @setItems(tags)
+
+  scrollToItemView: (view) ->
+    super
+    return unless @cancelPosition
+
+    tag = @getSelectedItem()
+    @scrollToPosition(tag.position)
+
+  scrollToPosition: (position, select = true)->
+    editorView = atom.workspaceView.getActiveView()
+    return unless editorView
+    editor = editorView.getEditor()
+    editorView.scrollToBufferPosition(position, center: true)
+    editor.setCursorBufferPosition(position)
+    editor.selectWord() if select

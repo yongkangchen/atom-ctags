@@ -30,6 +30,7 @@ class SymbolsView extends SelectListView
       super
 
   confirmed : (tag) ->
+    @cancelPosition = null
     @cancel()
     @openTag(tag)
 
