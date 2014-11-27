@@ -18,6 +18,13 @@ module.exports =
             provider = new CtagsProvider editorView
             @autocomplete.registerProviderForEditorView provider, editorView
             @providers.push provider
+            for view in @autocomplete.autocompleteViews
+                fuzzyProvider = view.providers[0]
+                if fuzzyProvider.constructor.name == "FuzzyProvider"
+                    view.unregisterProvider fuzzyProvider
+                    fuzzyProvider.dispose()
+                    break
+
 
   deactivate: ->
     @editorSubscription?.off()
