@@ -32,7 +32,7 @@ ProviderClass: (Provider, Suggestion, ctagsCache)  ->
           v = matches[k++]
           continue if output[v.name]
           output[v.name] = v
-          suggestions.push new Suggestion(this, word: v.name, prefix: prefix)
+          suggestions.push new Suggestion(this, word: v.name, prefix: prefix, label: v.pattern)
         if suggestions.length == 1 and suggestions[0].word == prefix
           return []
       else
