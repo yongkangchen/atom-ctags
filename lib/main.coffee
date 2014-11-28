@@ -17,10 +17,9 @@ module.exports =
     setTimeout((=> @ctagsComplete.activate(@ctagsCache)), 2000)
 
     if atom.config.get('atom-ctags.autoBuildTagsWhenActive')
-      t = setTimeout((=>
+      @createFileView().rebuild() if atom.project.getPath()
+      atom.project.on 'path-changed', (paths)=>
         @createFileView().rebuild()
-        t = null
-      ), 2000)
 
     atom.workspaceView.command 'atom-ctags:rebuild', (e, cmdArgs)=>
       @ctagsCache.cmdArgs = cmdArgs if Array.isArray(cmdArgs)
