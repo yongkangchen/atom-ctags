@@ -20,7 +20,7 @@ module.exports =
             @providers.push provider
             for view in @autocomplete.autocompleteViews
                 fuzzyProvider = view.providers[0]
-                if fuzzyProvider.constructor.name == "FuzzyProvider"
+                if fuzzyProvider and fuzzyProvider.constructor.name == "FuzzyProvider"
                     view.unregisterProvider fuzzyProvider
                     fuzzyProvider.dispose()
                     break
