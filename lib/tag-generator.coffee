@@ -27,10 +27,11 @@ class TagGenerator
     --row
 
     sections = start.split(/\t+/)
-    name = sections[sections.length-2]
+    file = sections.pop()
+    name = sections.join("\t")
     return unless name
 
-    file: sections[sections.length-1]
+    file: file
     position: new Point(row, pattern.indexOf(name))
     pattern: pattern
     name: name
