@@ -139,7 +139,7 @@ class TagGenerator
     t = setTimeout =>
       childProcess.kill()
       error """
-      stoped: Build more than #{timeout} seconds, check if #{@path} contain too many file.<br>
+      Stopped: Build more than #{timeout/1000} seconds, check if #{@path} contain too many file.<br>
               Suggest that add CmdArgs at atom-ctags package setting, example:<br>
                   --exclude=some/path --exclude=some/other"""
     ,timeout
