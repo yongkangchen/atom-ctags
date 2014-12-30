@@ -11,6 +11,6 @@
 ]
 
 'context-menu':
-  '.overlayer':
+  'atom-text-editor':
     'Go to Declaration': 'atom-ctags:go-to-declaration',
     'Rebuild ctags': 'atom-ctags:rebuild'
