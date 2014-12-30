@@ -25,7 +25,7 @@
 
 --langdef=Sass
 --langmap=Sass:.sass
---regex-Sass=/^[ \t]*([#.]*[a-zA-Z_0-9]+)[ \t]*$/\1/f,function/
+--regex-Sass=/^[ \t]*([a-zA-Z0-9]*[#.]+[#.a-zA-Z0-9\_\-]+)[ \t]*/\1/f,function/
 
 --langdef=Yaml
 --langmap=Yaml:.yaml
