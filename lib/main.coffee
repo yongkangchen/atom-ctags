@@ -48,7 +48,7 @@ module.exports =
     if not atom.packages.isPackageDisabled("symbols-view")
       atom.packages.disablePackage("symbols-view")
       alert "Warning from atom-ctags:
-              atom-ctags is for replace and enhance symbols-view package.
+              atom-ctags replaces and enhances the symbols-view package.
               Therefore, symbols-view has been disabled."
 
     initExtraTagsTime = null
