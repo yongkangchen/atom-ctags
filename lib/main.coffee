@@ -1,10 +1,24 @@
 module.exports =
-  configDefaults:
-    autoBuildTagsWhenActive: false
-    buildTimeout: 5000
-    cmd:""
-    cmdArgs: ""
-    extraTagFiles: ""
+  config:
+    autoBuildTagsWhenActive:
+        title: 'Automatically rebuild tags'
+        description: 'Rebuild tags file each time a project path changes'
+        type: 'boolean'
+        default: false
+    buildTimeout:
+        title: 'Build timeout'
+        description: 'Time (in milliseconds) to wait for a tags rebuild to finish'
+        type: 'integer'
+        default: 5000
+    cmd:
+        type: 'string'
+        default: ""
+    cmdArgs:
+        type: 'string'
+        default: ""
+    extraTagFiles:
+        type: 'string'
+        default: ""
 
   activate: ->
     @stack = []
