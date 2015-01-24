@@ -1,10 +1,28 @@
+{CompositeDisposable} = require 'atom'
+
 module.exports =
-  configDefaults:
-    autoBuildTagsWhenActive: false
-    buildTimeout: 5000
-    cmd:""
-    cmdArgs: ""
-    extraTagFiles: ""
+  disposables: new CompositeDisposable
+
+  config:
+    autoBuildTagsWhenActive:
+        title: 'Automatically rebuild tags'
+        description: 'Rebuild tags file each time a project path changes'
+        type: 'boolean'
+        default: false
+    buildTimeout:
+        title: 'Build timeout'
+        description: 'Time (in milliseconds) to wait for a tags rebuild to finish'
+        type: 'integer'
+        default: 5000
+    cmd:
+        type: 'string'
+        default: ""
+    cmdArgs:
+        type: 'string'
+        default: ""
+    extraTagFiles:
+        type: 'string'
+        default: ""
 
   activate: ->
     @stack = []
@@ -18,7 +36,7 @@ module.exports =
 
     if atom.config.get('atom-ctags.autoBuildTagsWhenActive')
       @createFileView().rebuild() if atom.project.getPath()
-      atom.project.on 'path-changed', (paths)=>
+      @disposables.add atom.project.onDidChangePaths (paths)=>
         @createFileView().rebuild()
 
     atom.workspaceView.command 'atom-ctags:rebuild', (e, cmdArgs)=>
@@ -62,6 +80,8 @@ module.exports =
 
 
   deactivate: ->
+    @disposables.dispose()
+
     if @fileView?
       @fileView.destroy()
       @fileView = null
