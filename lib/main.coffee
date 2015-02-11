@@ -24,15 +24,14 @@ module.exports =
         type: 'string'
         default: ""
 
+  provider: null
+
   activate: ->
     @stack = []
 
     @ctagsCache = require "./ctags-cache"
 
     @ctagsCache.activate()
-
-    @ctagsComplete = require "./ctags-complete"
-    setTimeout((=> @ctagsComplete.activate(@ctagsCache)), 2000)
 
     if atom.config.get('atom-ctags.autoBuildTagsWhenActive')
       @createFileView().rebuild() if atom.project.getPath()
@@ -98,7 +97,6 @@ module.exports =
       @goBackView.destroy()
       @goBackView = null
 
-    @ctagsComplete.deactivate()
     @ctagsCache.deactivate()
 
   createFileView: ->
@@ -113,3 +111,13 @@ module.exports =
       GoBackView = require './go-back-view'
       @goBackView = new GoBackView(@stack)
     @goBackView
+
+  getProvider: ->
+    return @provider if @provider?
+    CtagsProvider = require './ctags-provider'
+    @provider = new CtagsProvider()
+    @provider.ctagsCache = @ctagsCache
+    return @provider
+
+  provide: ->
+    return {provider: @getProvider()}

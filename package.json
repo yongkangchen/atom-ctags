@@ -11,5 +11,12 @@
   "repository": "https://github.com/yongkangchen/atom-ctags",
   "engines": {
     "atom": ">=0.107.0"
+  },
+  "providedServices": {
+    "autocomplete.provider": {
+      "versions": {
+        "1.0.0": "provide"
+      }
+    }
   }
 }
