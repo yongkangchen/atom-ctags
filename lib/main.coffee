@@ -1,4 +1,4 @@
-{CompositeDisposable} = require 'atom'
+{$, CompositeDisposable} = require 'atom'
 
 module.exports =
   disposables: new CompositeDisposable
@@ -38,29 +38,30 @@ module.exports =
       @disposables.add atom.project.onDidChangePaths (paths)=>
         @createFileView().rebuild()
 
-    atom.workspaceView.command 'atom-ctags:rebuild', (e, cmdArgs)=>
+    atom.commands.add 'atom-workspace', 'atom-ctags:rebuild', (e, cmdArgs)=>
       @ctagsCache.cmdArgs = cmdArgs if Array.isArray(cmdArgs)
       @createFileView().rebuild()
       if t
         clearTimeout(t)
         t = null
 
-    atom.workspaceView.command 'atom-ctags:toggle-file-symbols', =>
+    atom.commands.add 'atom-workspace', 'atom-ctags:toggle-file-symbols', =>
       @createFileView().toggle()
 
-    atom.workspaceView.command 'atom-ctags:toggle-project-symbols', =>
+    atom.commands.add 'atom-workspace', 'atom-ctags:toggle-project-symbols', =>
       @createFileView().toggleAll()
 
-    atom.workspaceView.command 'atom-ctags:go-to-declaration', =>
+    atom.commands.add 'atom-workspace', 'atom-ctags:go-to-declaration', =>
       @createFileView().goto()
 
-    atom.workspaceView.command 'atom-ctags:return-from-declaration', =>
+    atom.commands.add 'atom-workspace', 'atom-ctags:return-from-declaration', =>
       @createGoBackView().toggle()
 
-    atom.workspaceView.eachEditorView (editorView)->
-      editorView.on 'mousedown', (event) ->
+    atom.workspace.observeTextEditors (editor) ->
+      editorView = atom.views.getView(editor)
+      $(editorView).on 'mousedown', (event) ->
         return unless event.altKey and event.which is 1
-        atom.workspaceView.trigger 'atom-ctags:go-to-declaration'
+        atom.commands.dispatch atom.views.getView(atom.workspace), 'atom-ctags:go-to-declaration'
 
     if not atom.packages.isPackageDisabled("symbols-view")
       atom.packages.disablePackage("symbols-view")
