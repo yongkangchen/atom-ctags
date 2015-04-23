@@ -50,7 +50,7 @@ module.exports =
   generateTags:(path, callback) ->
     delete @cachedTags[path]
 
-    scopeName = atom.workspace.getActiveEditor()?.getGrammar()?.scopeName
+    scopeName = atom.workspace.getActiveTextEditor()?.getGrammar()?.scopeName
     if not TagGenerator
       TagGenerator = require './tag-generator'
 

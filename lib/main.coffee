@@ -1,4 +1,5 @@
-{$, CompositeDisposable} = require 'atom'
+{$} = require 'atom-space-pen-views'
+{CompositeDisposable} = require 'atom'
 
 module.exports =
   disposables: new CompositeDisposable

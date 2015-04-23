@@ -6,11 +6,12 @@ class SymbolsView extends SelectListView
 
   initialize: (@stack) ->
     super
-    @addClass('atom-ctags overlay from-top')
+    @panel = atom.workspace.addModalPanel(item: this, visible: false)
+    @addClass('atom-ctags')
 
   destroy: ->
     @cancel()
-    @remove()
+    @panel.destroy()
 
   getFilterKey: -> 'name'
 
@@ -31,16 +32,19 @@ class SymbolsView extends SelectListView
     else
       super
 
+  cancelled: ->
+    @panel.hide()
+
   confirmed : (tag) ->
     @cancelPosition = null
     @cancel()
     @openTag(tag)
 
   openTag: (tag) ->
-    if editor = atom.workspace.getActiveEditor()
+    if editor = atom.workspace.getActiveTextEditor()
       previous =
         position: editor.getCursorBufferPosition()
-        file: editor.getUri()
+        file: editor.getURI()
 
     {position} = tag
     atom.workspace.open(tag.file).done =>
@@ -55,5 +59,5 @@ class SymbolsView extends SelectListView
 
   attach: ->
     @storeFocusedElement()
-    atom.workspaceView.appendToTop(this)
+    @panel.show()
     @focusFilterEditor()

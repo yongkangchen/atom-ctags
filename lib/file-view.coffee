@@ -1,4 +1,4 @@
-{$$} = require 'atom'
+{$$} = require 'atom-space-pen-views'
 SymbolsView = require './symbols-view'
 
 module.exports =
@@ -16,6 +16,10 @@ class FileView extends SymbolsView
 
       editor.onDidDestroy -> disposable.dispose()
 
+  destroy: ->
+    @editorsSubscription.dispose()
+    super
+
   viewForItem: ({position, name, file, pattern}) ->
     $$ ->
       @li class: 'two-lines', =>
@@ -28,13 +32,12 @@ class FileView extends SymbolsView
           @span file, class: 'pull-right'
 
   toggle: ->
-    if @hasParent()
+    if @panel.isVisible()
       @cancel()
     else
-      editor = atom.workspace.getActiveEditor()
+      editor = atom.workspace.getActiveTextEditor()
       return unless editor
       filePath = editor.getPath()
-      return unless filePath
       @cancelPosition = editor.getCursorBufferPosition()
       @populate(filePath)
       @attach()
@@ -45,7 +48,7 @@ class FileView extends SymbolsView
     @cancelPosition = null
 
   toggleAll: ->
-    if @hasParent()
+    if @panel.isVisible()
       @cancel()
     else
       @list.empty()
@@ -57,16 +60,17 @@ class FileView extends SymbolsView
       @attach()
 
   getCurSymbol: ->
-    editor = atom.workspace.getActiveEditor()
+    editor = atom.workspace.getActiveTextEditor()
     if not editor
-      console.error "[atom-ctags:getCurSymbol] failed getActiveEditor "
+      console.error "[atom-ctags:getCurSymbol] failed getActiveTextEditor "
       return
 
-    if editor.getCursor().getScopes().indexOf('source.ruby') isnt -1
+    cursor = editor.getLastCursor()
+    if cursor.getScopes().indexOf('source.ruby') isnt -1
       # Include ! and ? in word regular expression for ruby files
-      range = editor.getCursor().getCurrentWordBufferRange(wordRegex: /[\w!?]*/g)
+      range = cursor.getCurrentWordBufferRange(wordRegex: /[\w!?]*/g)
     else
-      range = editor.getCursor().getCurrentWordBufferRange()
+      range = cursor.getCurrentWordBufferRange()
     return editor.getTextInRange(range)
 
   rebuild: ->
@@ -110,4 +114,4 @@ class FileView extends SymbolsView
     if editor = atom.workspace.getActiveTextEditor()
       editor.scrollToBufferPosition(position, center: true)
       editor.setCursorBufferPosition(position)
-      editor.selectWord() if select
+      editor.selectWordsContainingCursors() if select
