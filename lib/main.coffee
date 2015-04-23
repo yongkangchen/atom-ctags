@@ -35,7 +35,7 @@ module.exports =
     @ctagsCache.activate()
 
     if atom.config.get('atom-ctags.autoBuildTagsWhenActive')
-      @createFileView().rebuild() if atom.project.getPath()
+      @createFileView().rebuild() if atom.project.getPaths().length >= 1
       @disposables.add atom.project.onDidChangePaths (paths)=>
         @createFileView().rebuild()
 

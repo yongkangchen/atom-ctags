@@ -74,12 +74,12 @@ class FileView extends SymbolsView
     return editor.getTextInRange(range)
 
   rebuild: ->
-    projectPath = atom.project.getPath()
-    if not projectPath
+    projectPaths = atom.project.getPaths()
+    if projectPaths.length < 1
       console.error "[atom-ctags:rebuild] cancel rebuild, invalid projectPath: #{projectPath}"
       return
     @ctagsCache.cachedTags = {}
-    @ctagsCache.generateTags projectPath
+    @ctagsCache.generateTags projectPath for projectPath in projectPaths
 
   goto: ->
     symbol = @getCurSymbol()
