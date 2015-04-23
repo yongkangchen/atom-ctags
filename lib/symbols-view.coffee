@@ -1,4 +1,4 @@
-{$$, SelectListView} = require 'atom'
+{$$, SelectListView} = require 'atom-space-pen-views'
 fs = null
 
 module.exports =
@@ -14,7 +14,9 @@ class SymbolsView extends SelectListView
 
   getFilterKey: -> 'name'
 
-  viewForItem: ({position, name, file}) ->
+  viewForItem: ({position, name, file, directory}) ->
+    if atom.project.getPaths().length > 1
+      file = path.join(path.basename(directory), file)
     $$ ->
       @li class: 'two-lines', =>
         if position?
@@ -41,21 +43,17 @@ class SymbolsView extends SelectListView
         file: editor.getUri()
 
     {position} = tag
-
-
-    atom.workspaceView.open(tag.file).done =>
+    atom.workspace.open(tag.file).done =>
       @moveToPosition(position) if position
 
     @stack.push(previous)
 
   moveToPosition: (position) ->
-    editorView = atom.workspaceView.getActiveView()
-    if editor = editorView.getEditor?()
-      editorView.scrollToBufferPosition(position, center: true)
+    if editor = atom.workspace.getActiveTextEditor()
+      editor.scrollToBufferPosition(position, center: true)
       editor.setCursorBufferPosition(position)
 
   attach: ->
-    return if this.parent().length > 0
     @storeFocusedElement()
     atom.workspaceView.appendToTop(this)
     @focusFilterEditor()

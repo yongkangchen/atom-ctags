@@ -5,21 +5,16 @@ module.exports =
 class FileView extends SymbolsView
   initialize: ->
     super
-    @subscribe atom.project.eachBuffer (buffer) =>
-      @subscribe buffer, 'after-will-be-saved', =>
+
+    @editorsSubscription = atom.workspace.observeTextEditors (editor) =>
+      disposable = editor.onDidSave =>
+        buffer = editor.getBuffer()
         return unless buffer.isModified()
-        f = buffer.getPath()
-        return unless atom.project.contains(f)
-        @ctagsCache.generateTags(f)
+          f = buffer.getPath()
+          return unless atom.project.contains(f)
+          @ctagsCache.generateTags(f)
 
-      @subscribe buffer, 'destroyed', =>
-        @unsubscribe(buffer)
-
-    @subscribe atom.workspace.eachEditor (editor) =>
-
-      @subscribe editor, 'destroyed', =>
-        @unsubscribe(editor)
-
+      editor.onDidDestroy -> disposable.dispose()
 
   viewForItem: ({position, name, file, pattern}) ->
     $$ ->
@@ -112,9 +107,7 @@ class FileView extends SymbolsView
     @scrollToPosition(tag.position)
 
   scrollToPosition: (position, select = true)->
-    editorView = atom.workspaceView.getActiveView()
-    return unless editorView
-    editor = editorView.getEditor()
-    editorView.scrollToBufferPosition(position, center: true)
-    editor.setCursorBufferPosition(position)
-    editor.selectWord() if select
+    if editor = atom.workspace.getActiveTextEditor()
+      editor.scrollToBufferPosition(position, center: true)
+      editor.setCursorBufferPosition(position)
+      editor.selectWord() if select
