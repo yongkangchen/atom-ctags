@@ -22,6 +22,7 @@
 --langmap=Css:+.scss
 --regex-Css=/^[ \t]*(.+)[ \t]*\{/\1/f,function/
 --regex-Css=/^[ \t]*(.+)[ \t]*,[ \t]*$/\1/f,function/
+--regex-Css=/^[ \t]*[@$]([a-zA-Z$_][-a-zA-Z$_0-9]*)[ \t]*:/\1/f,function/
 
 --langdef=Sass
 --langmap=Sass:.sass
@@ -63,5 +64,40 @@
 --langdef=Go
 --langmap=Go:.go
 --regex-Go=/func([ \t]+\([^)]+\))?[ \t]+([a-zA-Z0-9_]+)/\2/f,func/
---regex-Go=/var[ \t]+([a-zA-Z_][a-zA-Z0-9_]+)/\1/v,var/
---regex-Go=/type[ \t]+([a-zA-Z_][a-zA-Z0-9_]+)/\1/t,type/
+--regex-Go=/var[ \t]+([a-zA-Z_][a-zA-Z0-9_]*)/\1/v,var/
+--regex-Go=/type[ \t]+([a-zA-Z_][a-zA-Z0-9_]*)/\1/t,type/
+
+--langmap=perl:+.pod
+--regex-perl=/with[ \t]+([^;]+)[ \t]*?;/\1/w,role,roles/
+--regex-perl=/extends[ \t]+['"]([^'"]+)['"][ \t]*?;/\1/e,extends/
+--regex-perl=/use[ \t]+base[ \t]+['"]([^'"]+)['"][ \t]*?;/\1/e,extends/
+--regex-perl=/use[ \t]+parent[ \t]+['"]([^'"]+)['"][ \t]*?;/\1/e,extends/
+--regex-perl=/Mojo::Base[ \t]+['"]([^'"]+)['"][ \t]*?;/\1/e,extends/
+--regex-perl=/^[ \t]*?use[ \t]+([^;]+)[ \t]*?;/\1/u,use,uses/
+--regex-perl=/^[ \t]*?require[ \t]+((\w|\:)+)/\1/r,require,requires/
+--regex-perl=/^[ \t]*?has[ \t]+['"]?(\w+)['"]?/\1/a,attribute,attributes/
+--regex-perl=/^[ \t]*?\*(\w+)[ \t]*?=/\1/a,alias,aliases/
+--regex-perl=/->helper\([ \t]?['"]?(\w+)['"]?/\1/h,helper,helpers/
+--regex-perl=/^[ \t]*?our[ \t]*?[\$@%](\w+)/\1/o,our,ours/
+--regex-perl=/^\=head1[ \t]+(.+)/\1/p,pod,Plain Old Documentation/
+--regex-perl=/^\=head2[ \t]+(.+)/-- \1/p,pod,Plain Old Documentation/
+--regex-perl=/^\=head[3-5][ \t]+(.+)/---- \1/p,pod,Plain Old Documentation/
+
+--regex-JavaScript=/(,|(;|^)[ \t]*(var|let|([A-Za-z_$][A-Za-z0-9_$.]*\.)*))[ \t]*([A-Za-z0-9_$]+)[ \t]*=[ \t]*function[ \t]*\(/\5/,function/
+--regex-JavaScript=/function[ \t]+([A-Za-z0-9_$]+)[ \t]*\([^)]*\)/\1/,function/
+--regex-JavaScript=/(,|^|\*\/)[ \t]*([A-Za-z_$][A-Za-z0-9_$]+)[ \t]*:[ \t]*function[ \t]*\(/\2/,function/
+--regex-JavaScript=/(,|^|\*\/)[ \t]*(while|if|for|function|([A-Za-z_$][A-Za-z0-9_$]+))[ \t]*\([^)]*\)[ \t]*\{/\3/,function/
+--regex-JavaScript=/(,|^|\*\/)[ \t]*get[ \t]+([A-Za-z_$][A-Za-z0-9_$]+)[ \t]*\([ \t]*\)[ \t]*\{/get \2/,function/
+--regex-JavaScript=/(,|^|\*\/)[ \t]*set[ \t]+([A-Za-z_$][A-Za-z0-9_$]+)[ \t]*\([ \t]*([A-Za-z_$][A-Za-z0-9_$]+)?[ \t]*\)[ \t]*\{/set \2/,function/
+
+--langdef=haxe
+--langmap=haxe:.hx
+--regex-haxe=/^package[ \t]+([A-Za-z0-9_.]+)/\1/p,package/
+--regex-haxe=/^[ \t]*[(@:macro|private|public|static|override|inline|dynamic)( \t)]*function[ \t]+([A-Za-z0-9_]+)/\1/f,function/
+--regex-haxe=/^[ \t]*([private|public|static|protected|inline][ \t]*)+var[ \t]+([A-Za-z0-9_]+)/\2/v,variable/
+--regex-haxe=/^[ \t]*package[ \t]*([A-Za-z0-9_]+)/\1/p,package/
+--regex-haxe=/^[ \t]*(extern[ \t]*|@:native\([^)]*\)[ \t]*)*class[ \t]+([A-Za-z0-9_]+)[ \t]*[^\{]*/\2/c,class/
+--regex-haxe=/^[ \t]*(extern[ \t]+)?interface[ \t]+([A-Za-z0-9_]+)/\2/i,interface/
+--regex-haxe=/^[ \t]*typedef[ \t]+([A-Za-z0-9_]+)/\1/t,typedef/
+--regex-haxe=/^[ \t]*enum[ \t]+([A-Za-z0-9_]+)/\1/t,typedef/
+--regex-haxe=/^[ \t]*+([A-Za-z0-9_]+)(;|\([^)]*:[^)]*\))/\1/t,enum_field/
