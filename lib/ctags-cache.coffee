@@ -17,7 +17,7 @@ module.exports =
   deactivate: ->
     @cachedTags = null
 
-  initTags: (paths)->
+  initTags: (paths, auto)->
     return if paths.length == 0
     @cachedTags = {}
     for p in paths
@@ -25,7 +25,7 @@ module.exports =
       if tagsFile
         @readTags(tagsFile, @cachedTags)
       else
-        @generateTags(p)
+        @generateTags(p) if auto
 
   initExtraTags: (paths) ->
     @extraTags = {}

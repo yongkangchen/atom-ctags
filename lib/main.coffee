@@ -34,10 +34,9 @@ module.exports =
 
     @ctagsCache.activate()
 
-    if atom.config.get('atom-ctags.autoBuildTagsWhenActive')
-      @ctagsCache.initTags(atom.project.getPaths())
-      @disposable = atom.project.onDidChangePaths (paths)=>
-        @ctagsCache.initTags(paths)
+    @ctagsCache.initTags(atom.project.getPaths(), atom.config.get('atom-ctags.autoBuildTagsWhenActive'))
+    @disposable = atom.project.onDidChangePaths (paths)=>
+      @ctagsCache.initTags(paths, atom.config.get('atom-ctags.autoBuildTagsWhenActive'))
 
     atom.commands.add 'atom-workspace', 'atom-ctags:rebuild', (e, cmdArgs)=>
       console.error "rebuild: ", e
