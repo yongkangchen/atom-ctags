@@ -6,7 +6,8 @@
   "license": "MIT",
   "dependencies": {
     "q": "~1.0.1",
-    "atom-message-panel": "^1.1.1"
+    "atom-message-panel": "^1.1.1",
+    "atom-space-pen-views": "^2.0.0"
   },
   "repository": "https://github.com/yongkangchen/atom-ctags",
   "engines": {
