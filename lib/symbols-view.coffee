@@ -1,8 +1,11 @@
 {$$, SelectListView} = require 'atom-space-pen-views'
+{Point} = require 'atom'
 fs = null
 
 module.exports =
 class SymbolsView extends SelectListView
+  @activate: ->
+    new SymbolsView
 
   initialize: (@stack) ->
     super
@@ -15,15 +18,10 @@ class SymbolsView extends SelectListView
 
   getFilterKey: -> 'name'
 
-  viewForItem: ({position, name, file, directory}) ->
-    if atom.project.getPaths().length > 1
-      file = path.join(path.basename(directory), file)
+  viewForItem: ({lineNumber, name, file, directory}) ->
     $$ ->
       @li class: 'two-lines', =>
-        if position?
-          @div "#{name}:#{position.row + 1}", class: 'primary-line'
-        else
-          @div name, class: 'primary-line'
+        @div "#{name}:#{lineNumber}", class: 'primary-line'
         @div file, class: 'secondary-line'
 
   getEmptyMessage: (itemCount) ->
@@ -40,15 +38,22 @@ class SymbolsView extends SelectListView
     @cancel()
     @openTag(tag)
 
+  getTagPosition: (tag) ->
+    if not tag.position and tag.lineNumber and tag.pattern
+      tag.position = new Point(tag.lineNumber-1, tag.pattern.indexOf(tag.name)-2)
+    if not tag.position
+      console.error "Atom Ctags: please create a new issue: " + JSON.stringify(tag)
+    return tag.position
+
   openTag: (tag) ->
     if editor = atom.workspace.getActiveTextEditor()
       previous =
         position: editor.getCursorBufferPosition()
         file: editor.getURI()
 
-    {position} = tag
-    atom.workspace.open(tag.file).done =>
-      @moveToPosition(position) if position
+    if tag.file
+      atom.workspace.open(tag.file).done =>
+        @moveToPosition(tag.position) if @getTagPosition(tag)
 
     @stack.push(previous)
 

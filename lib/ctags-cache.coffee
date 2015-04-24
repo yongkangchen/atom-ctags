@@ -1,5 +1,13 @@
 
-TagGenerator = null
+TagGenerator = require './tag-generator'
+ctags = require './ctags'
+fs = require "fs"
+path = require "path"
+
+getTagsFile = (directoryPath) ->
+  tagsFile = path.join(directoryPath, ".tags")
+  return tagsFile if fs.existsSync(tagsFile)
+
 matchOpt = {matchBase: true}
 module.exports =
   activate: () ->
@@ -9,23 +17,37 @@ module.exports =
   deactivate: ->
     @cachedTags = null
 
+  initTags: (paths)->
+    return if paths.length == 0
+    @cachedTags = {}
+    for p in paths
+      tagsFile = getTagsFile(p)
+      if tagsFile
+        @readTags(tagsFile, @cachedTags)
+      else
+        @generateTags(p)
+
   initExtraTags: (paths) ->
     @extraTags = {}
-    for path in paths
-      path = path.trim()
-      continue unless path
-      @readTags(path)
+    for p in paths
+      p = p.trim()
+      continue unless p
+      @readTags(p, @extraTags)
 
-  readTags: (path) ->
-    if not TagGenerator
-      TagGenerator = require './tag-generator'
-    new TagGenerator(path).read().done (tags) =>
+  readTags: (p, container, onEnd) ->
+    stream = ctags.createReadStream(p)
+
+    stream.on 'error', (error)->
+      console.error 'atom-ctags: ', error
+
+    stream.on 'data', (tags)->
       for tag in tags
-        data = @extraTags[tag.file]
+        data = container[tag.file]
         if not data
           data = []
-          @extraTags[tag.file] = data
+          container[tag.file] = data
         data.push tag
+    stream.on('end', onEnd) if onEnd
 
   #options = { partialMatch: true, maxItems }
   findTags: (prefix, options) ->
@@ -47,32 +69,28 @@ module.exports =
         return true if options?.maxItems and tags.length == options.maxItems
     return false
 
-  generateTags:(path, callback) ->
-    delete @cachedTags[path]
-
-    scopeName = atom.workspace.getActiveTextEditor()?.getGrammar()?.scopeName
-    if not TagGenerator
-      TagGenerator = require './tag-generator'
+  generateTags:(p, isAppend, callback) ->
+    delete @cachedTags[p]
 
     startTime = Date.now()
-    console.log "[atom-ctags:rebuild] start @#{path}@ tags..."
+    console.log "[atom-ctags:rebuild] start @#{p}@ tags..."
+
     cmdArgs = atom.config.get("atom-ctags.cmdArgs")
     cmdArgs = cmdArgs.split(" ") if cmdArgs
-    new TagGenerator(path, scopeName, @cmdArgs || cmdArgs ).generate().done (tags) =>
-      console.log "[atom-ctags:rebuild] command done @#{path}@ tags. cost: #{Date.now() - startTime}ms"
+
+    TagGenerator p, isAppend, @cmdArgs || cmdArgs, (tagpath) =>
+      console.log "[atom-ctags:rebuild] command done @#{p}@ tags. cost: #{Date.now() - startTime}ms"
+
       startTime = Date.now()
+      @readTags(tagpath, @cachedTags)
 
-      for tag in tags
-        data = @cachedTags[tag.file]
-        if not data
-          data = []
-          @cachedTags[tag.file] = data
-        data.push tag
-
-      console.log "[atom-ctags:rebuild] parse end @#{path}@ tags. cost: #{Date.now() - startTime}ms"
-      callback?(tags)
+      console.log "[atom-ctags:rebuild] parse end @#{p}@ tags. cost: #{Date.now() - startTime}ms"
+      callback?()
 
   getOrCreateTags: (filePath, callback) ->
     tags = @cachedTags[filePath]
     return callback?(tags) if tags
-    @generateTags(filePath, callback)
+
+    @generateTags filePath, true, ->
+      tags = @cachedTags[filePath]
+      callback?(tags)
