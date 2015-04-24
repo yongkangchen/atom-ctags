@@ -2,7 +2,7 @@
 {CompositeDisposable} = require 'atom'
 
 module.exports =
-  disposables: new CompositeDisposable
+  disposable: null
 
   config:
     autoBuildTagsWhenActive:
@@ -35,34 +35,31 @@ module.exports =
     @ctagsCache.activate()
 
     if atom.config.get('atom-ctags.autoBuildTagsWhenActive')
-      @createFileView().rebuild() if atom.project.getPaths().length >= 1
-      @disposables.add atom.project.onDidChangePaths (paths)=>
-        @createFileView().rebuild()
+      @ctagsCache.initTags(atom.project.getPaths())
+      @disposable = atom.project.onDidChangePaths (paths)=>
+        @ctagsCache.initTags(paths)
 
     atom.commands.add 'atom-workspace', 'atom-ctags:rebuild', (e, cmdArgs)=>
+      console.error "rebuild: ", e
       @ctagsCache.cmdArgs = cmdArgs if Array.isArray(cmdArgs)
-      @createFileView().rebuild()
+      @createFileView().rebuild(true)
       if t
         clearTimeout(t)
         t = null
 
-    atom.commands.add 'atom-workspace', 'atom-ctags:toggle-file-symbols', =>
-      @createFileView().toggle()
-
     atom.commands.add 'atom-workspace', 'atom-ctags:toggle-project-symbols', =>
       @createFileView().toggleAll()
 
-    atom.commands.add 'atom-workspace', 'atom-ctags:go-to-declaration', =>
-      @createFileView().goto()
+    atom.commands.add 'atom-text-editor',
+      'atom-ctags:toggle-file-symbols': => @createFileView().toggle()
+      'atom-ctags:go-to-declaration': => @createFileView().goto()
+      'atom-ctags:return-from-declaration': => @createGoBackView().toggle()
 
-    atom.commands.add 'atom-workspace', 'atom-ctags:return-from-declaration', =>
-      @createGoBackView().toggle()
-
-    atom.workspace.observeTextEditors (editor) ->
+    atom.workspace.observeTextEditors (editor) =>
       editorView = atom.views.getView(editor)
-      $(editorView).on 'mousedown', (event) ->
+      $(editorView).on 'mousedown', (event) =>
         return unless event.altKey and event.which is 1
-        atom.commands.dispatch atom.views.getView(atom.workspace), 'atom-ctags:go-to-declaration'
+        @createFileView().goto()
 
     if not atom.packages.isPackageDisabled("symbols-view")
       atom.packages.disablePackage("symbols-view")
@@ -78,10 +75,10 @@ module.exports =
         initExtraTagsTime = null
       ), 1000)
 
-
-
   deactivate: ->
-    @disposables.dispose()
+    if @disposable?
+      @disposable.dispose()
+      @disposable = null
 
     if @fileView?
       @fileView.destroy()
