@@ -35,6 +35,9 @@ module.exports =
       @readTags(p, @extraTags)
 
   readTags: (p, container, onEnd) ->
+    console.log "[atom-ctags:readTags] #{p} start..."
+    startTime = Date.now()
+
     stream = ctags.createReadStream(p)
 
     stream.on 'error', (error)->
@@ -47,7 +50,8 @@ module.exports =
           data = []
           container[tag.file] = data
         data.push tag
-    stream.on('end', onEnd) if onEnd
+    stream.on 'end', ()->
+      console.log "[atom-ctags:readTags] #{p} cost: #{Date.now() - startTime}ms"
 
   #options = { partialMatch: true, maxItems }
   findTags: (prefix, options) ->
