@@ -114,12 +114,9 @@ module.exports =
       @goBackView = new GoBackView(@stack)
     @goBackView
 
-  getProvider: ->
-    return @provider if @provider?
-    CtagsProvider = require './ctags-provider'
-    @provider = new CtagsProvider()
-    @provider.ctagsCache = @ctagsCache
-    return @provider
-
   provide: ->
-    return {provider: @getProvider()}
+    unless @provider?
+      CtagsProvider = require './ctags-provider'
+      @provider = new CtagsProvider()
+      @provider.ctagsCache = @ctagsCache
+    @provider

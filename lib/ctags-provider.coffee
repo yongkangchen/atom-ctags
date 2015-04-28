@@ -1,13 +1,10 @@
 module.exports =
 class CtagsProvider
-  id: 'autocomplete-ctags-ctagssprovider'
   selector: '*'
 
   tag_options = { partialMatch: true, maxItems: 10 }
 
-  requestHandler: (options) ->
-    prefix = options.prefix
-
+  getSuggestions: ({prefix}) ->
     # TODO: support : .
     # tag_options.partialMatch = true
     # if not prefix.length
