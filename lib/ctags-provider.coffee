@@ -28,12 +28,12 @@ class CtagsProvider
         v = matches[k++]
         continue if output[v.name]
         output[v.name] = v
-        suggestions.push {word: v.name, prefix: prefix, label: v.pattern}
-      if suggestions.length == 1 and suggestions[0].word == prefix
+        suggestions.push {text: v.name, displayText: v.pattern}
+      if suggestions.length == 1 and suggestions[0].text == prefix
         return []
     else
       for i in matches
-        suggestions.push {word: i.name, prefix: prefix, label: i.pattern}
+        suggestions.push {text: i.name, displayText: i.pattern}
 
     # No suggestions? Don't autocomplete!
     return unless suggestions.length
