@@ -11,6 +11,7 @@
 ]
 
 'context-menu':
-  'atom-text-editor':
-    'Go to Declaration': 'atom-ctags:go-to-declaration',
-    'Rebuild ctags': 'atom-ctags:rebuild'
+  'atom-text-editor': [
+    { label: 'Go to Declaration', command: 'atom-ctags:go-to-declaration' },
+    { label: 'Rebuild ctags', command: 'atom-ctags:rebuild' }
+  ]
