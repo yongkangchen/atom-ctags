@@ -107,9 +107,6 @@ class FileView extends SymbolsView
     super
     return unless @cancelPosition
 
-    tag = @getSelectedItem()
-    @scrollToPosition(tag.position)
-
   scrollToPosition: (position, select = true)->
     if editor = atom.workspace.getActiveTextEditor()
       editor.scrollToBufferPosition(position, center: true)
