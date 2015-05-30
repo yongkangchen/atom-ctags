@@ -8,11 +8,9 @@ class FileView extends SymbolsView
 
     @editorsSubscription = atom.workspace.observeTextEditors (editor) =>
       disposable = editor.onDidSave =>
-        buffer = editor.getBuffer()
-        return unless buffer.isModified()
-          f = buffer.getPath()
-          return unless atom.project.contains(f)
-          @ctagsCache.generateTags(f)
+        f = editor.getPath()
+        return unless atom.project.contains(f)
+        @ctagsCache.generateTags(f, true)
 
       editor.onDidDestroy -> disposable.dispose()
 
@@ -20,7 +18,7 @@ class FileView extends SymbolsView
     @editorsSubscription.dispose()
     super
 
-  viewForItem: ({position, name, file, pattern}) ->
+  viewForItem: ({lineNumber, name, file, pattern}) ->
     $$ ->
       @li class: 'two-lines', =>
         @div class: 'primary-line', =>
@@ -28,7 +26,7 @@ class FileView extends SymbolsView
           @span pattern, class: 'pull-right'
 
         @div class: 'secondary-line', =>
-          @span "Line #{position.row + 1}", class: 'pull-left'
+          @span "Line: #{lineNumber}", class: 'pull-left'
           @span file, class: 'pull-right'
 
   toggle: ->
@@ -38,6 +36,7 @@ class FileView extends SymbolsView
       editor = atom.workspace.getActiveTextEditor()
       return unless editor
       filePath = editor.getPath()
+      return unless filePath
       @cancelPosition = editor.getCursorBufferPosition()
       @populate(filePath)
       @attach()
@@ -108,7 +107,7 @@ class FileView extends SymbolsView
     return unless @cancelPosition
 
     tag = @getSelectedItem()
-    @scrollToPosition(tag.position)
+    @scrollToPosition(@getTagPosition(tag))
 
   scrollToPosition: (position, select = true)->
     if editor = atom.workspace.getActiveTextEditor()

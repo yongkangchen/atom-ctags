@@ -1,6 +1,5 @@
 '.platform-darwin atom-text-editor':
   'cmd-r': 'atom-ctags:toggle-file-symbols'
-  'cmd-shift-r': 'atom-ctags:toggle-project-symbols'
   'cmd-alt-down': 'atom-ctags:go-to-declaration'
   'cmd-alt-up': 'atom-ctags:return-from-declaration'
 
@@ -9,6 +8,11 @@
 
 '.platform-linux atom-text-editor':
   'ctrl-r': 'atom-ctags:toggle-file-symbols'
-  'ctrl-shift-r': 'atom-ctags:toggle-project-symbols'
   'ctrl-alt-down': 'atom-ctags:go-to-declaration'
   'ctrl-alt-up': 'atom-ctags:return-from-declaration'
+
+'.platform-darwin':
+  'cmd-R': 'atom-ctags:toggle-project-symbols'
+
+'.platform-win32, .platform-linux':
+  'ctrl-R': 'atom-ctags:toggle-project-symbols'
