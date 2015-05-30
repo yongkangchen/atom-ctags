@@ -65,7 +65,7 @@ class FileView extends SymbolsView
       return
 
     cursor = editor.getLastCursor()
-    if cursor.getScopes().indexOf('source.ruby') isnt -1
+    if cursor.getScopeDescriptor().getScopesArray().indexOf('source.ruby') isnt -1
       # Include ! and ? in word regular expression for ruby files
       range = cursor.getCurrentWordBufferRange(wordRegex: /[\w!?]*/g)
     else
