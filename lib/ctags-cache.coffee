@@ -1,6 +1,6 @@
 
 TagGenerator = require './tag-generator'
-ctags = require './ctags'
+ctags = require 'ctags'
 fs = require "fs"
 path = require "path"
 
