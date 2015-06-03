@@ -24,9 +24,6 @@ and fork from [symbols-view](https://github.com/atom/symbols-view)
 **You can install atom-ctags using the Preferences pane.**
 And please Make sure that [autocomplete-plus](https://github.com/saschagehlich/autocomplete-plus) already installed.
 
-#Make a donation via Paypal ![Make a donation via Paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)
-Click 'Send Money' after login PayPal, and my PayPal account is: lx1988cyk#gmail.com
-
 #TODO
 * Merge [symbols-tree-view](https://atom.io/packages/symbols-tree-view)
 * ~~Submit to atom package center~~
@@ -47,3 +44,6 @@ Click 'Send Money' after login PayPal, and my PayPal account is: lx1988cyk#gmail
 * Optimization for duplicate results [#3](https://github.com/yongkangchen/atom-ctags/issues/3)
 * [speed tag parse by use ctag command param to parse line number instead of fs-plus](https://github.com/yongkangchen/atom-ctags/commit/784160320309212d0acf865092133ba55980c605)
 * [`use -R instead of (fs-plus).traverseTreeSync` and `search tag limit max`](https://github.com/yongkangchen/atom-ctags/commit/4e4df478c2a00b83143e1887a8b6fd6c5067ce95)
+
+#Make a donation via Paypal ![Make a donation via Paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)
+Click 'Send Money' after login PayPal, and my PayPal account is: lx1988cyk#gmail.com
