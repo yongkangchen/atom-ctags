@@ -42,7 +42,7 @@ module.exports = (codepath, isAppend, cmdArgs, callback)->
     genPath = tagsPath
 
   args = []
-  args.push @cmdArgs... if @cmdArgs
+  args.push cmdArgs... if cmdArgs
 
   args.push("--options=#{defaultCtagsFile}", '--fields=+KSn', '--excmd=p')
   args.push('-u', '-R', '-f', genPath, codepath)
