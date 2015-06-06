@@ -34,7 +34,7 @@ module.exports =
       continue unless p
       @readTags(p, @extraTags)
 
-  readTags: (p, container, onEnd) ->
+  readTags: (p, container, callback) ->
     console.log "[atom-ctags:readTags] #{p} start..."
     startTime = Date.now()
 
@@ -52,6 +52,7 @@ module.exports =
         data.push tag
     stream.on 'end', ()->
       console.log "[atom-ctags:readTags] #{p} cost: #{Date.now() - startTime}ms"
+      callback?()
 
   #options = { partialMatch: true, maxItems }
   findTags: (prefix, options) ->
@@ -86,15 +87,12 @@ module.exports =
       console.log "[atom-ctags:rebuild] command done @#{p}@ tags. cost: #{Date.now() - startTime}ms"
 
       startTime = Date.now()
-      @readTags(tagpath, @cachedTags)
-
-      console.log "[atom-ctags:rebuild] parse end @#{p}@ tags. cost: #{Date.now() - startTime}ms"
-      callback?()
+      @readTags(tagpath, @cachedTags, callback)
 
   getOrCreateTags: (filePath, callback) ->
     tags = @cachedTags[filePath]
     return callback?(tags) if tags
 
-    @generateTags filePath, true, ->
+    @generateTags filePath, true, =>
       tags = @cachedTags[filePath]
       callback?(tags)
