@@ -1,19 +1,26 @@
+checkSnippet = (tag)->
+  #TODO support more language
+  if tag.kind == "require"
+    return tag.pattern.substring(2, tag.pattern.length-2)
+  if tag.kind == "function"
+    return tag.pattern.substring(tag.pattern.indexOf(tag.name), tag.pattern.length-2)
+    
+tagToSuggestion = (tag)->
+  text: tag.name
+  displayText: tag.pattern
+  type: tag.kind
+  snippet: checkSnippet(tag)
+    
 module.exports =
 class CtagsProvider
   selector: '*'
 
   tag_options = { partialMatch: true, maxItems: 10 }
+  prefix_opt = {wordRegex: /[a-zA-Z0-9_]+[\.\:]/}
 
-  getSuggestions: ({prefix}) ->
-    # TODO: support : .
-    # tag_options.partialMatch = true
-    # if not prefix.length
-    #   selection = options.editor.getSelection()
-    #   #here to show pre symbol tag pattern
-    #   selectionRange = selection.getBufferRange()
-    #   selectionRange = selectionRange.add([0, -1])
-    #   prefix = @prefixOfSelection { getBufferRange: ()-> selectionRange }
-    #   tag_options.partialMatch = false
+  getSuggestions: ({editor, bufferPosition, scopeDescriptor, prefix}) ->
+    if prefix == "." or prefix == ":"
+      prefix = editor.getWordUnderCursor(prefix_opt)
 
     # No prefix? Don't autocomplete!
     return unless prefix.length
@@ -25,15 +32,15 @@ class CtagsProvider
       output = {}
       k = 0
       while k < matches.length
-        v = matches[k++]
-        continue if output[v.name]
-        output[v.name] = v
-        suggestions.push {text: v.name, displayText: v.pattern}
+        tag = matches[k++]
+        continue if output[tag.name]
+        output[tag.name] = tag
+        suggestions.push tagToSuggestion(tag)
       if suggestions.length == 1 and suggestions[0].text == prefix
         return []
     else
-      for i in matches
-        suggestions.push {text: i.name, displayText: i.pattern}
+      for tag in matches
+        suggestions.push tagToSuggestion(tag)
 
     # No suggestions? Don't autocomplete!
     return unless suggestions.length
