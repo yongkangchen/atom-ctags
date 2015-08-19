@@ -3,6 +3,10 @@
   "version": "4.1.4",
   "main": "./lib/main",
   "description": "better autocomplete for atom",
+  "keywords": [
+    "autocomplete",
+    "ctags"
+  ],
   "license": "MIT",
   "dependencies": {
     "q": "^1.1.2",
