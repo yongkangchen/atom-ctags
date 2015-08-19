@@ -54,7 +54,7 @@ class FileView extends SymbolsView
       @maxItems = 10
       tags = []
       for key, val of @ctagsCache.cachedTags
-        tags.push val...
+        tags.push tag for tag in val
       @setItems(tags)
       @attach()
 
