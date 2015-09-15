@@ -24,6 +24,11 @@ module.exports =
     extraTagFiles:
         type: 'string'
         default: ""
+    altKeyMouseClickGotoSymbol:
+        title: 'Goto symbol'
+        description: 'Use alt-mouseclick to goto a symbol'
+        type: 'boolean'
+        default: true
 
   provider: null
 
@@ -58,7 +63,7 @@ module.exports =
       editorView = atom.views.getView(editor)
       {$} = require 'atom-space-pen-views' unless $
       $(editorView).on 'mousedown', (event) =>
-        return unless event.altKey and event.which is 1
+        return unless event.altKey and event.which is 1 and atom.config.get('atom-ctags.altKeyMouseClickGotoSymbol')
         @createFileView().goto()
 
     if not atom.packages.isPackageDisabled("symbols-view")
