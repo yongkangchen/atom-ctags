@@ -70,7 +70,7 @@ module.exports =
         which = atom.config.get('atom-ctags.GotoSymbolClick')
         return unless MouseEventWhichDict[which] == event.which
         for keyName in atom.config.get('atom-ctags.GotoSymbolKey')
-          return if event[keyName+"Key"] == false
+          return if not event[keyName+"Key"]
         @createFileView().goto()
 
     if not atom.packages.isPackageDisabled("symbols-view")
