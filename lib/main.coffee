@@ -1,30 +1,39 @@
 $ = null
 {CompositeDisposable} = require 'atom'
 
+MouseEventWhichDict = {"left click": 1, "middle click": 2, "right click": 3}
 module.exports =
   disposable: null
 
   config:
     autoBuildTagsWhenActive:
-        title: 'Automatically rebuild tags'
-        description: 'Rebuild tags file each time a project path changes'
-        type: 'boolean'
-        default: false
+      title: 'Automatically rebuild tags'
+      description: 'Rebuild tags file each time a project path changes'
+      type: 'boolean'
+      default: false
     buildTimeout:
-        title: 'Build timeout'
-        description: 'Time (in milliseconds) to wait for a tags rebuild to finish'
-        type: 'integer'
-        default: 5000
+      title: 'Build timeout'
+      description: 'Time (in milliseconds) to wait for a tags rebuild to finish'
+      type: 'integer'
+      default: 5000
     cmd:
-        type: 'string'
-        default: ""
+      type: 'string'
+      default: ""
     cmdArgs:
-        type: 'string'
-        default: ""
+      type: 'string'
+      default: ""
     extraTagFiles:
-        type: 'string'
-        default: ""
-
+      type: 'string'
+      default: ""
+    GotoSymbolKey:
+      description: 'combine bindings: alt, ctrl, meta, shift'
+      type: 'array'
+      default: ["alt"]
+    GotoSymbolClick:
+      type: 'string'
+      default: "left click"
+      enum: ["left click", "middle click", "right click"]
+          
   provider: null
 
   activate: ->
@@ -58,7 +67,10 @@ module.exports =
       editorView = atom.views.getView(editor)
       {$} = require 'atom-space-pen-views' unless $
       $(editorView).on 'mousedown', (event) =>
-        return unless event.altKey and event.which is 1
+        which = atom.config.get('atom-ctags.GotoSymbolClick')
+        return unless MouseEventWhichDict[which] == event.which
+        for keyName in atom.config.get('atom-ctags.GotoSymbolKey')
+          return if event[keyName+"Key"] == false
         @createFileView().goto()
 
     if not atom.packages.isPackageDisabled("symbols-view")
