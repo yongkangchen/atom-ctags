@@ -23,7 +23,7 @@ class FileView extends SymbolsView
       @li class: 'two-lines', =>
         @div class: 'primary-line', =>
           @span name, class: 'pull-left'
-          @span pattern, class: 'pull-right'
+          @span pattern.substring(2, pattern.length-2), class: 'pull-right'
 
         @div class: 'secondary-line', =>
           @span "Line: #{lineNumber}", class: 'pull-left'

@@ -7,7 +7,7 @@ checkSnippet = (tag)->
     
 tagToSuggestion = (tag)->
   text: tag.name
-  displayText: tag.pattern
+  displayText: tag.pattern.substring(2, tag.pattern.length-2)
   type: tag.kind
   snippet: checkSnippet(tag)
     
