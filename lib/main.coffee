@@ -6,6 +6,9 @@ module.exports =
   disposable: null
 
   config:
+    disableComplete:
+      type: 'boolean'
+      default: false
     autoBuildTagsWhenActive:
       title: 'Automatically rebuild tags'
       description: 'Rebuild tags file each time a project path changes'
@@ -78,7 +81,11 @@ module.exports =
       alert "Warning from atom-ctags:
               atom-ctags replaces and enhances the symbols-view package.
               Therefore, symbols-view has been disabled."
-
+    
+    atom.config.observe 'atom-ctags.disableComplete', =>
+      return unless @provider
+      @provider.disabled = atom.config.get('atom-ctags.disableComplete')
+    
     initExtraTagsTime = null
     atom.config.observe 'atom-ctags.extraTagFiles', =>
       clearTimeout initExtraTagsTime if initExtraTagsTime
@@ -128,4 +135,5 @@ module.exports =
       CtagsProvider = require './ctags-provider'
       @provider = new CtagsProvider()
       @provider.ctagsCache = @ctagsCache
+      @provider.disabled = atom.config.get('atom-ctags.disableComplete')
     @provider
