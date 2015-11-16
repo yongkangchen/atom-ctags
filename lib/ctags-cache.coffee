@@ -45,6 +45,7 @@ module.exports =
 
     stream.on 'data', (tags)->
       for tag in tags
+        continue unless tag.pattern
         data = container[tag.file]
         if not data
           data = []
