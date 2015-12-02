@@ -52,7 +52,7 @@ class SymbolsView extends SelectListView
         file: editor.getURI()
 
     if tag.file
-      atom.workspace.open(tag.file).done =>
+      atom.workspace.open(tag.file).then =>
         @moveToPosition(tag.position) if @getTagPosition(tag)
 
     @stack.push(previous)
