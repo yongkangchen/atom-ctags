@@ -7,6 +7,7 @@ module.exports =
 
   config:
     disableComplete:
+      title: 'Disable auto complete'
       type: 'boolean'
       default: false
     autoBuildTagsWhenActive:
@@ -23,9 +24,11 @@ module.exports =
       type: 'string'
       default: ""
     cmdArgs:
+      description: 'Add specified ctag command args like: --exclude=lib --exclude=*.js'
       type: 'string'
       default: ""
     extraTagFiles:
+      description: 'Add specified tagFiles. (Make sure you tag file generate with --fields=+KSn)'
       type: 'string'
       default: ""
     GotoSymbolKey:
@@ -36,7 +39,7 @@ module.exports =
       type: 'string'
       default: "left click"
       enum: ["left click", "middle click", "right click"]
-          
+
   provider: null
 
   activate: ->
@@ -81,11 +84,11 @@ module.exports =
       alert "Warning from atom-ctags:
               atom-ctags replaces and enhances the symbols-view package.
               Therefore, symbols-view has been disabled."
-    
+
     atom.config.observe 'atom-ctags.disableComplete', =>
       return unless @provider
       @provider.disabled = atom.config.get('atom-ctags.disableComplete')
-    
+
     initExtraTagsTime = null
     atom.config.observe 'atom-ctags.extraTagFiles', =>
       clearTimeout initExtraTagsTime if initExtraTagsTime
