@@ -18,7 +18,7 @@ module.exports =
       title: 'Build timeout'
       description: 'Time (in milliseconds) to wait for a tags rebuild to finish'
       type: 'integer'
-      default: 5000
+      default: 10000
     cmd:
       type: 'string'
       default: ""
