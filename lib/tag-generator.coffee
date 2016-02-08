@@ -32,9 +32,13 @@ module.exports = (codepath, isAppend, cmdArgs, callback)->
   command = atom.config.get("atom-ctags.cmd").trim()
   if command == ""
     command = path.resolve(__dirname, '..', 'vendor', "ctags-#{process.platform}")
-  defaultCtagsFile = require.resolve('./.ctags')
+  ctagsFile = require.resolve('./.ctags')
 
   projectPath = getProjectPath(codepath)
+  projectCtagsFile = path.join(projectPath, ".ctags")
+  if fs.existsSync(projectCtagsFile)
+    ctagsFile = projectCtagsFile
+
   tagsPath = path.join(projectPath, ".tags")
   if isAppend
     genPath = path.join(projectPath, ".tags1")
@@ -44,7 +48,7 @@ module.exports = (codepath, isAppend, cmdArgs, callback)->
   args = []
   args.push cmdArgs... if cmdArgs
 
-  args.push("--options=#{defaultCtagsFile}", '--fields=+KSn', '--excmd=p')
+  args.push("--options=#{ctagsFile}", '--fields=+KSn', '--excmd=p')
   args.push('-u', '-R', '-f', genPath, codepath)
 
   stderr = (data)->
