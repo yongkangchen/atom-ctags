@@ -3,7 +3,7 @@
 
 This package uses：
 [ctags](http://ctags.sourceforge.net),
-[autocomplete-plus](https://github.com/saschagehlich/autocomplete-plus)
+[autocomplete-plus](https://github.com/atom/autocomplete-plus)
 and fork from [symbols-view](https://github.com/atom/symbols-view)
 
 #Features
