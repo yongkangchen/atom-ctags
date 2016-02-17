@@ -5,6 +5,8 @@
 
 '.platform-win32 atom-text-editor':
   'ctrl-r': 'atom-ctags:toggle-file-symbols'
+  'f12': 'atom-ctags:go-to-declaration'
+  'shift-f12': 'atom-ctags:return-from-declaration'
 
 '.platform-linux atom-text-editor':
   'ctrl-r': 'atom-ctags:toggle-file-symbols'
