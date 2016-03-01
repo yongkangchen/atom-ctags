@@ -71,7 +71,7 @@ module.exports = (codepath, isAppend, cmdArgs, callback)->
   t = setTimeout ->
     childProcess.kill()
     error """
-    Stopped: Build more than #{timeout/1000} seconds, check if #{codepath} contain too many file.<br>
+    Stopped: Build more than #{timeout/1000} seconds, check if #{codepath} contain too many files.<br>
             Suggest that add CmdArgs at atom-ctags package setting, example:<br>
                 --exclude=some/path --exclude=some/other"""
   , timeout
