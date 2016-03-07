@@ -13,5 +13,6 @@
 'context-menu':
   'atom-text-editor': [
     { label: 'Go to Declaration', command: 'atom-ctags:go-to-declaration' },
+    { label: 'Return From Declaration', command: 'atom-ctags:return-from-declaration' },
     { label: 'Rebuild ctags', command: 'atom-ctags:rebuild' }
   ]
