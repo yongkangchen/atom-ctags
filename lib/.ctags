@@ -60,8 +60,8 @@
 --langmap=Ruby:+(Rakefile)
 
 --langmap=Php:+.module
---regex-Php=/^namespace[ \t]+([A-Za-z0-9\\]+);/\1/n,namespace/
---regex-Php=/^trait[ \t]+([A-Za-z0-9\_]+)/\1/c,trait/
+--regex-Php=/^[ \t]*namespace[ \t]+([A-Za-z0-9\\]+);/\1/n,namespace/
+--regex-Php=/^[ \t]*trait[ \t]+([A-Za-z0-9\_]+)/\1/c,trait/
 
 --langdef=Go
 --langmap=Go:.go
