@@ -38,6 +38,9 @@ module.exports =
     console.log "[atom-ctags:readTags] #{p} start..."
     startTime = Date.now()
 
+    root = path.resolve atom.workspace.project.getPaths()?[0]
+    pthprefix = path.relative root, path.dirname path.resolve p
+
     stream = ctags.createReadStream(p)
 
     stream.on 'error', (error)->
@@ -46,6 +49,7 @@ module.exports =
     stream.on 'data', (tags)->
       for tag in tags
         continue unless tag.pattern
+        tag.file = path.normalize pthprefix+path.sep+tag.file
         data = container[tag.file]
         if not data
           data = []
