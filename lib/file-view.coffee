@@ -1,3 +1,4 @@
+{CompositeDisposable} = require 'atom'
 {$$} = require 'atom-space-pen-views'
 SymbolsView = require './symbols-view'
 
@@ -6,16 +7,16 @@ class FileView extends SymbolsView
   initialize: ->
     super
 
-    @editorsSubscription = atom.workspace.observeTextEditors (editor) =>
-      disposable = editor.onDidSave =>
+    @disposables = new CompositeDisposable()
+
+    @disposables.add atom.workspace.observeTextEditors (editor) =>
+      @disposables.add editor.onDidSave =>
         f = editor.getPath()
         return unless atom.project.contains(f)
         @ctagsCache.generateTags(f, true)
 
-      editor.onDidDestroy -> disposable.dispose()
-
   destroy: ->
-    @editorsSubscription.dispose()
+    @disposables.dispose()
     super
 
   viewForItem: ({lineNumber, name, file, pattern}) ->
