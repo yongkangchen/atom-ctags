@@ -87,14 +87,18 @@ class FileView extends SymbolsView
     if not symbol
       console.error "[atom-ctags:goto] failed getCurSymbol"
       return
+    @gotoSymbol(symbol)
 
+  gotoSymbol: (symbol) ->
     tags = @ctagsCache.findTags(symbol)
-
     if tags.length is 1
       @openTag(tags[0])
     else
       @setItems(tags)
-      @attach()
+      # @attach() works without a setTimeout when go-to-declaration is invoked by key command, but it fails (i.e.
+      # appears to do nothing) when invoked by a mousedown event or hyperclick provider. Adding the setTimeout(..., 0)
+      # makes all 3 cases work.
+      setTimeout((=> @attach()), 0)
 
   populate: (filePath) ->
     @list.empty()
