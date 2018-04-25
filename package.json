@@ -23,6 +23,11 @@
       "versions": {
         "2.0.0": "provide"
       }
+    },
+    "hyperclick": {
+      "versions": {
+        "0.1.0": "provideHyperclick"
+      }
     }
   }
 }

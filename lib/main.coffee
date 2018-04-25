@@ -140,3 +140,18 @@ module.exports =
       @provider.ctagsCache = @ctagsCache
       @provider.disabled = atom.config.get('atom-ctags.disableComplete')
     @provider
+
+  # Docs: https://github.com/facebook-atom/atom-ide-ui/tree/master/modules/atom-ide-ui/pkg/hyperclick
+  provideHyperclick: ->
+    return
+      # Provide for all grammars
+      #grammarScopes: ...
+      # Be lowest priority, so that more specific hyperclick providers can override us
+      priority: -1
+      # TODO Is hyperclick's wordAtPosition more robust than our own FileView.getCurSymbol? Consider replacing ours if so.
+      getSuggestionForWord: (editor, text, range) =>
+        return
+          # Underline this range on cmd-hover, as a visual cue for clicking
+          range: range
+          # On cmd-click
+          callback: () => @createFileView().gotoSymbol(text)
