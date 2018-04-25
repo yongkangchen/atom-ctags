@@ -18,7 +18,9 @@ class FileView extends SymbolsView
     @editorsSubscription.dispose()
     super
 
-  viewForItem: ({lineNumber, name, file, pattern}) ->
+  getFilterKey: -> 'filterKey'
+
+  viewForItem: ({lineNumber, name, relFile, pattern}) ->
     $$ ->
       @li class: 'two-lines', =>
         @div class: 'primary-line', =>
@@ -27,7 +29,7 @@ class FileView extends SymbolsView
 
         @div class: 'secondary-line', =>
           @span "Line: #{lineNumber}", class: 'pull-left'
-          @span file, class: 'pull-right'
+          @span relFile, class: 'pull-right'
 
   toggle: ->
     if @panel.isVisible()
