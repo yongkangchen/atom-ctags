@@ -64,15 +64,23 @@ class FileView extends SymbolsView
       console.error "[atom-ctags:getCurSymbol] failed getActiveTextEditor "
       return
 
-    cursor = editor.getLastCursor()
-    if cursor.getScopeDescriptor().getScopesArray().indexOf('source.ruby') isnt -1
+    scopes = editor.getLastCursor().getScopeDescriptor().getScopesArray()
+    if scopes.indexOf('source.ruby') isnt -1
       # Include ! and ? in word regular expression for ruby files
-      range = cursor.getCurrentWordBufferRange(wordRegex: /[\w!?]*/g)
-    else if cursor.getScopeDescriptor().getScopesArray().indexOf('source.clojure') isnt -1
-      range = cursor.getCurrentWordBufferRange(wordRegex: /[\w\*\+!\-_'\?<>]([\w\*\+!\-_'\?<>\.:]+[\w\*\+!\-_'\?<>]?)?/g)
+      wordRegex = /[\w!?]*/g
+    else if scopes.indexOf('source.clojure') isnt -1
+      wordRegex = /[\w\*\+!\-_'\?<>]([\w\*\+!\-_'\?<>\.:]+[\w\*\+!\-_'\?<>]?)?/g
     else
-      range = cursor.getCurrentWordBufferRange()
-    return editor.getTextInRange(range)
+      wordRegex = null
+
+    # Workaround: use editor.getWordUnderCursor(wordRegex, includeNonWordCharacters: false) instead of
+    # cursor.getCurrentWordBufferRange(wordRegex) to avoid these atom bugs that I think never got resolved:
+    # - https://github.com/atom/atom/issues/6538
+    # - https://github.com/atom/atom/pull/8906
+    #
+    # Concretely, with cursor.getCurrentWordBufferRange, invoking go-to-declaration on text 'foo.bar' with the cursor on
+    # 'b' would incorrectly return '.', whereas editor.getWordUnderCursor correctly returns 'bar'.
+    return editor.getWordUnderCursor(wordRegex: wordRegex, includeNonWordCharacters: false)
 
   rebuild: ->
     projectPaths = atom.project.getPaths()
