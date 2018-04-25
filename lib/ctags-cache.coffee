@@ -76,6 +76,10 @@ module.exports =
     return false
 
   generateTags:(p, isAppend, callback) ->
+    if @cachedTags is null
+      console.warn('generateTags: @cachedTags is null, skipping')
+      return
+
     delete @cachedTags[p]
 
     startTime = Date.now()
