@@ -40,18 +40,19 @@ module.exports =
 
     stream = ctags.createReadStream(p)
 
-    stream.on 'error', (error)->
+    stream.on 'error', (error) =>
       console.error 'atom-ctags: ', error
 
-    stream.on 'data', (tags)->
+    stream.on 'data', (tags) =>
       for tag in tags
         continue unless tag.pattern
         data = container[tag.file]
         if not data
           data = []
           container[tag.file] = data
+        @addFieldsToTag(tag)
         data.push tag
-    stream.on 'end', ()->
+    stream.on 'end', () =>
       console.log "[atom-ctags:readTags] #{p} cost: #{Date.now() - startTime}ms"
       callback?()
 
@@ -97,3 +98,10 @@ module.exports =
     @generateTags filePath, true, =>
       tags = @cachedTags[filePath]
       callback?(tags)
+
+  addFieldsToTag: (tag) ->
+    # Add .relFile, for .filterKey and for more concise display
+    [projectDir, relFile] = atom.workspace.project.relativizePath(tag.file)
+    tag.relFile = path.join(path.basename(projectDir), relFile)
+    # Add .filterKey, for FileView.getFilterKey
+    tag.filterKey = "#{tag.name} #{tag.relFile}"
