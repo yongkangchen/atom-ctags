@@ -65,7 +65,10 @@ module.exports = (codepath, isAppend, cmdArgs, callback)->
 
     callback(genPath)
 
-  childProcess = new BufferedProcess({command, args, stderr, exit})
+  options =
+    cwd: projectPath
+
+  childProcess = new BufferedProcess({command, args, options, stderr, exit})
 
   timeout = atom.config.get('atom-ctags.buildTimeout')
   t = setTimeout ->
